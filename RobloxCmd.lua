@@ -13,6 +13,12 @@ local commands = {
 		msgBar("*suicide mode*", 1)
 		game.Players.MultRob.Character:BreakJoints()
 	end,
+	kill = function(target)
+		if not target then msgBar("STOP FAILING MULT", 1) return end
+		if not game.Players[target] then msgBar("STOP FAILING MULT", 1) return end
+		game.Players[target].Character:BreakJoints()
+		msgBar("lel i just killed "..target)
+	end,
 }
 
 game.Players.MultRob.Chatted:connect(function(msg)
