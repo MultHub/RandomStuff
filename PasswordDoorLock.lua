@@ -24,7 +24,7 @@ if not fs.exists(".pwdl_data") then
 	write("   Fail msg: ")
 	config.write(".pwdl_data", "fail", read())
 	write("  Fail time: ")
-	config.write(".pwdl_data", "failTime", read())
+	config.write(".pwdl_data", "failTime", tonumber(read()))
 	write("   Exit msg: ")
 	config.write(".pwdl_data", "exit", read())
 	print("Press any key to continue")
