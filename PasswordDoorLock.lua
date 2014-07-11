@@ -1,5 +1,14 @@
+local remote = http.get("https://raw.github.com/MultHub/RandomStuff/master/PasswordDoorLock.lua")
+if remote then
+	local file = fs.open(shell.getRunningProgram(), "w")
+	file.write(remote.readAll())
+	file.close()
+	remote.close()
+end
+
 local config = setmetatable({}, {__index=_G})
 local remote = http.get("https://raw.github.com/MultHub/LMNet-OS/master/src/apis/config.lua")
+if not remote then os.reboot() end
 setfenv(loadstring(remote.readAll(), "API"), config)()
 remote.close()
 
