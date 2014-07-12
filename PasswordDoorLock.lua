@@ -1,3 +1,6 @@
+local ope = os.pullEvent
+os.pullEvent = os.pullEventRaw
+
 local remote = http.get("https://raw.github.com/MultHub/RandomStuff/master/PasswordDoorLock.lua")
 if remote then
 	local file = fs.open(shell.getRunningProgram(), "w")
@@ -48,9 +51,6 @@ local function clear()
 	term.setCursorPos(1, 1)
 	print(conf.lockName)
 end
-
-local ope = os.pullEvent
-os.pullEvent = os.pullEventRaw
 
 clear()
 write(conf.passPrompt)
