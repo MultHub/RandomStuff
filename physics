@@ -1,0 +1,47 @@
+local fEnv = {}
+setmetatable(fEnv, {__index = _G})
+local func, err = loadfile("physEng")
+if not func then
+	if err then
+		printError(err)
+	end
+	return
+end
+setfenv(func, fEnv)()
+local physics = {}
+for k, v in pairs(fEnv) do
+	physics[k] = v
+end
+physics.addMaterial("water", {
+	gravity = false,
+	color = colors.blue,
+	icon = "#",
+	onTick = function(self)
+		local dir = math.random(-1, 1)
+		local canMoveDown = false
+		if physics.getRelativeObject(self.x, self.y, 0, 1) == "" then
+			self.y = self.y + 1
+			canMoveDown = true
+		end
+		if physics.getRelativeObject(self.x, self.y, dir, 0) == "" and not canMoveDown then
+			self.x = self.x + dir
+		end
+	end,
+})
+physics.addMaterial("stone", {
+	gravity = false,
+	color = colors.gray,
+	icon = "#",
+})
+for y = 1, 5 do
+	for x = 1, 51 do
+		physics.addObject(x, y, "water")
+	end
+end
+for i = 1, 25 do
+	physics.addObject(i, 10, "stone")
+end
+for i = 27, 51 do
+	physics.addObject(i, 10, "stone")
+end
+physics.run(0.01)

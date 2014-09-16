@@ -1,0 +1,48 @@
+local fEnv = {}
+setmetatable(fEnv, {__index = _G})
+local func, err = loadfile("physEng")
+if not func then
+	if err then
+		printError(err)
+	end
+	return
+end
+setfenv(func, fEnv)()
+local physics = {}
+for k, v in pairs(fEnv) do
+	physics[k] = v
+end
+physics.addMaterial("anvil", {
+	gravity = false,
+	color = colors.white,
+	icon = "I",
+	onTick = function(self)
+		if physics.getRelativeObject(self.x, self.y, 0, 1) == "" then
+			self.y = self.y + 1
+		end
+	end,
+})
+physics.addMaterial("stone", {
+	gravity = false,
+	color = colors.gray,
+	icon = "#",
+})
+for y = 1, 11, 2 do
+	for x = 1, 3 do
+		physics.addObject(x, y, "anvil")
+	end
+end
+physics.addObject(1, 14, "stone")
+
+local function eventHandler(...)
+	local e = {...}
+	if e[1] ~= "mouse_click" and e[1] ~= "mouse_drag" then
+		return
+	end
+	if physics.getRelativeObject(e[3], e[4], 0, 0) ~= "" then
+		return
+	end
+	physics.addObject(e[3], e[4], "anvil")
+end
+
+physics.run(0.1, eventHandler)

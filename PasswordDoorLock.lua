@@ -9,11 +9,22 @@ if remote then
 	remote.close()
 end
 
-local config = setmetatable({}, {__index=_G})
-local remote = http.get("https://raw.github.com/MultHub/LMNet-OS/master/src/apis/config.lua")
-if not remote then os.reboot() end
-setfenv(loadstring(remote.readAll(), "API"), config)()
-remote.close()
+if not fs.exists(".lmnet/apis/config") then
+	local remote = http.get("https://raw.github.com/MultHub/LMNet-OS/master/src/apis/config.lua")
+	if not remote then os.reboot() end
+	if not fs.exists(".lmnet/apis") then
+		if not fs.exists(".lmnet") then
+			fs.makeDir(".lmnet")
+		end
+		fs.makeDir(".lmnet/apis")
+	end
+	local file = fs.open(".lmnet/apis/config", "w")
+	file.write(remote.readAll())
+	file.close()
+	remote.close()
+end
+
+if not config then os.loadAPI(".lmnet/apis/config") end
 
 if not fs.exists(".pwdl_data") then
 	term.clear()
