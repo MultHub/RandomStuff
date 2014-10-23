@@ -66,8 +66,16 @@ local commands = {
 	["raw+"] = function(text)
 		tableObject = text
 	end,
-	saveprof = saveProfile
-	loadprof = loadProfile
+	saveprof = saveProfile,
+	loadprof = loadProfile,
+	update = function()
+		local r = http.get("https://raw.github.com/MultHub/RandomStuff/master/gladdos.lua")
+		local f = fs.open(shell.getRunningProgram(), "w")
+		f.write(r.readAll())
+		f.close()
+		r.close()
+		print("Restart GLaDDoS to finish update.")
+	end,
 }
 
 function commands.help()
