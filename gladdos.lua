@@ -22,6 +22,8 @@ local function loadProfile(name)
 	print("Loaded profile "..name)
 end
 
+loadProfile(unpack(tArgs))
+
 local function saveProfile(name)
 	if not name then return end
 	local f = fs.open(".GLaDDoS-profiles", "r")
