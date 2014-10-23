@@ -2,19 +2,43 @@ local port
 local tableize = true
 local tableObject = "line"
 local tArgs = {...}
-if #tArgs < 1 or (#tArgs < 2 and tArgs[1] == "-r") then
-	print("Usage: GLaDDoS [-r|+<tableObject>] <channel>")
-	return
+
+local function loadProfile(name)
+	if not name then return end
+	local f = fs.open(".GLaDDoS-profiles", "r")
+	if not f then
+		print("No profiles found")
+		return
+	end
+	local profiles = textutils.unserialize(f.readAll())
+	f.close()
+	if not profiles[name] then
+		print("Unknown profile")
+		return
+	end
+	port = profiles[name].port
+	tableize = profiles[name].tableize
+	tableObject = profiles[name].tableObject
+	print("Loaded profile "..name)
 end
-if tArgs[1] == "-r" then
-	tableize = false
-	table.remove(tArgs, 1)
+
+local function saveProfile(name)
+	if not name then return end
+	local f = fs.open(".GLaDDoS-profiles", "r")
+	local profiles
+	if f then
+		profiles = textutils.unserialize(f.readAll())
+		f.close()
+	end
+	profiles[name] = {
+		port = port,
+		tableize = tableize,
+		tableObject = tableObject,
+	}
+	local f = fs.open(".GLaDDoS-profiles", "w")
+	f.write(textutils.serialize(profiles))
+	f.close()
 end
-if tArgs[1]:sub(1, 1) == "+" then
-	tableObject = tArgs[1]:sub(2)
-	table.remove(tArgs, 1)
-end
-port = tonumber(tArgs[1])
 
 local commands = {
 	port = function(id)
@@ -42,6 +66,8 @@ local commands = {
 	["raw+"] = function(text)
 		tableObject = text
 	end,
+	saveprof = saveProfile
+	loadprof = loadProfile
 }
 
 function commands.help()
@@ -78,9 +104,13 @@ pcall(function()
 		input = input:gsub("&", string.char(0xc2)..string.char(0xa7))
 		input = input:gsub("\\"..string.char(0xc2)..string.char(0xa7), "&")
 		if input:sub(1, 1) == "/" then
-			modem.open(port)
-			modem.transmit(port, os.getComputerID(), (tableize and {[tableObject] = (input:sub(1, 1) == "." and input:sub(2) or input)} or (input:sub(1, 1) == "." and input:sub(2) or input)))
-			modem.close(port)
+			if port then
+				modem.open(port)
+				modem.transmit(port, os.getComputerID(), (tableize and {[tableObject] = (input:sub(1, 1) == "." and input:sub(2) or input)} or (input:sub(1, 1) == "." and input:sub(2) or input)))
+				modem.close(port)
+			else
+				print("Set port with .port <id>")
+			end
 		else
 			handleCommands(input:sub(2))
 		end
