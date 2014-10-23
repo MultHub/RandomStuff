@@ -25,7 +25,7 @@ end
 local function saveProfile(name)
 	if not name then return end
 	local f = fs.open(".GLaDDoS-profiles", "r")
-	local profiles
+	local profiles = {}
 	if f then
 		profiles = textutils.unserialize(f.readAll())
 		f.close()
