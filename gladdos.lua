@@ -100,11 +100,20 @@ local function handleCommands(s)
 	end
 end
 
-print("GLaDDoS 1.3")
+print("GLaDDoS 1.31")
 
 local modem = peripheral.wrap("back")
 local hist = {}
-pcall(function()
+local oldPullEvent = os.pullEvent
+os.pullEvent = os.pullEventRaw
+parallel.waitForAny(function()
+	while true do
+		local e = os.pullEvent()
+		if e == "terminate" then
+			break
+		end
+	end
+end, function()
 	while true do
 		local input = read(nil, hist)
 		table.insert(hist, input)
@@ -126,3 +135,4 @@ pcall(function()
 		end
 	end
 end)
+os.pullEvent = oldPullEvent
