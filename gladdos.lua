@@ -70,6 +70,10 @@ local commands = {
 	end,
 	saveprof = saveProfile,
 	loadprof = loadProfile,
+	["shell"] = function()
+		print("Type exit to return to GLaDDoS")
+		shell.run("shell")
+	end,
 	update = function()
 		local r = http.get("https://raw.github.com/MultHub/RandomStuff/master/gladdos.lua")
 		local f = fs.open(shell.getRunningProgram(), "w")
