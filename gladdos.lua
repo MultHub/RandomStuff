@@ -106,7 +106,12 @@ end
 
 print("GLaDDoS 1.31")
 
-local modem = peripheral.wrap("back")
+local modems = {}
+for i, v in pairs(rs.getSides()) do
+	if peripheral.getType(v) == "modem" then
+		table.insert(modems, peripheral.wrap(v))
+	end
+end
 local hist = {}
 local oldPullEvent = os.pullEvent
 os.pullEvent = os.pullEventRaw
@@ -128,9 +133,11 @@ end, function()
 		input = input:gsub("\\"..string.char(0xc2)..string.char(0xa7), "&")
 		if input:sub(1, 1) == "/" then
 			if port then
-				modem.open(port)
-				modem.transmit(port, os.getComputerID(), (tableize and {[tableObject] = (input:sub(1, 1) == "." and input:sub(2) or input)} or (input:sub(1, 1) == "." and input:sub(2) or input)))
-				modem.close(port)
+				for i, modem in pairs(modems) do
+					modem.open(port)
+					modem.transmit(port, os.getComputerID(), (tableize and {[tableObject] = (input:sub(1, 1) == "." and input:sub(2) or input)} or (input:sub(1, 1) == "." and input:sub(2) or input)))
+					modem.close(port)
+				end
 			else
 				print("Set port with .port <id>")
 			end
