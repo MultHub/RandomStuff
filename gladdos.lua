@@ -82,6 +82,13 @@ local commands = {
 		r.close()
 		print("Restart GLaDDoS to finish update.")
 	end,
+	spoofid = function(id)
+		print("Old ID: "..os.getComputerID())
+		os.getComputerID = function()
+			return tostring(id)
+		end
+		print("New ID: "..os.getComputerID())
+	end,
 }
 
 function commands.help()
@@ -104,7 +111,7 @@ local function handleCommands(s)
 	end
 end
 
-print("GLaDDoS 1.31")
+print("GLaDDoS 1.32")
 
 local modems = {}
 for i, v in pairs(rs.getSides()) do
