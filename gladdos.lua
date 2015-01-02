@@ -85,7 +85,7 @@ local commands = {
 	spoofid = function(id)
 		print("Old ID: "..os.getComputerID())
 		os.getComputerID = function()
-			return tostring(id)
+			return tonumber(id)
 		end
 		print("New ID: "..os.getComputerID())
 	end,
