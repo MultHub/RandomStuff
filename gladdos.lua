@@ -111,7 +111,7 @@ local function handleCommands(s)
 	end
 end
 
-print("GLaDDoS 1.32")
+print("GLaDDoS 1.33")
 
 local modems = {}
 for i, v in pairs(rs.getSides()) do
@@ -138,6 +138,9 @@ end, function()
 		end
 		input = input:gsub("&", string.char(0xc2)..string.char(0xa7))
 		input = input:gsub("\\"..string.char(0xc2)..string.char(0xa7), "&")
+		input = input:gsub("\\0%d%d%d", function(str)
+			return loadstring("return '\\"..str:sub(3).."'")()
+		end)
 		if input:sub(1, 1) == "/" then
 			if port then
 				for i, modem in pairs(modems) do
