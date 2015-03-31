@@ -145,7 +145,7 @@ end, function()
 		local input = read(nil, hist)
 		table.insert(hist, input)
 		if input:sub(1, 1) ~= "/" and input:sub(1, 1) ~= "." then
-			input = "/say "..input
+			input = prefix..input
 		end
 		input = input:gsub("&", string.char(0xc2)..string.char(0xa7))
 		input = input:gsub("\\"..string.char(0xc2)..string.char(0xa7), "&")
