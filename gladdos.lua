@@ -2,6 +2,7 @@ local port
 local tableize = true
 local tableObject = "line"
 local tArgs = {...}
+local prefix = "/say "
 
 local function loadProfile(name)
 	if not name then return end
@@ -89,6 +90,9 @@ local commands = {
 		end
 		print("New ID: "..os.getComputerID())
 	end,
+	prefix = function(...)
+		prefix = table.concat({...}, " ")
+	end,
 }
 
 function commands.help()
@@ -103,9 +107,16 @@ end
 
 local function handleCommands(s)
 	local parts = {}
-	for part in string.gmatch(s, "[^ ]+") do
-		table.insert(parts, part)
+	local tmp = ""
+	for i = 1, #s do
+		if s:sub(i, i) == " " then
+			table.insert(parts, tmp)
+			tmp = ""
+		else
+			tmp = tmp .. s:sub(i, i)
+		end
 	end
+	table.insert(parts, tmp)
 	if commands[ parts[1] ] then
 		commands[ parts[1] ](unpack(parts, 2))
 	end
