@@ -1,6 +1,6 @@
 local tArgs = {...}
 
-print("boat v0.2")
+print("boat v0.21")
 local function printUsage()
 	print("Usage: boat <hostname> [pluginDir]")
 end
@@ -283,6 +283,9 @@ local ok, err = pcall( function()
 									end
 								else
 									send( config.chatMessage:format(tUser.sUsername, sMessage) )
+									for i, v in pairs(events.chat) do
+										v(tUser, sMessage)
+									end
 								end
 							end
 						elseif tMessage.sType == "ping to server" then
