@@ -4,6 +4,19 @@ local tableObject = "line"
 local tArgs = {...}
 local prefix = "/say "
 
+local replacers = {}
+
+local f = fs.open(".GLaDDoS-replacers", "r")
+if f then
+	local c = textutils.unserialize(f.readAll())
+	f.close()
+	if c then
+		for sSearch, sReplace in pairs(c) do
+			replacers[sSearch] = sReplace
+		end
+	end
+end
+
 local function loadProfile(name)
 	if not name then return end
 	local f = fs.open(".GLaDDoS-profiles", "r")
@@ -122,7 +135,7 @@ local function handleCommands(s)
 	end
 end
 
-print("GLaDDoS 1.33")
+print("GLaDDoS 1.34")
 
 local modems = {}
 for i, v in pairs(rs.getSides()) do
@@ -152,6 +165,9 @@ end, function()
 		input = input:gsub("\\0%d%d%d", function(str)
 			return loadstring("return '\\"..str:sub(3).."'")()
 		end)
+		for k, v in pairs(replacers) do
+			input = input:gsub(k, v)
+		end
 		if input:sub(1, 1) == "/" then
 			if port then
 				for i, modem in pairs(modems) do
