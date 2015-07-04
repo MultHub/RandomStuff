@@ -1,8 +1,10 @@
 local tArgs = {...}
 
-print("boat v0.21")
+print("boat v0.22")
 local function printUsage()
-	print("Usage: boat <hostname> [pluginDir]")
+	print("Usages:")
+	print("boat host <hostname> [pluginDir]")
+	print("boat update")
 end
 
 local sOpenedModem = nil
@@ -28,6 +30,19 @@ local function closeModem()
 end
 
 -- Get hostname
+local action = tArgs[1]
+if action == "update" then
+	local r = http.get("https://raw.github.com/MultHub/RandomStuff/master/boat.lua")
+	local f = fs.open(shell.getRunningProgram(), "w")
+	f.write(r.readAll())
+	f.close()
+	r.close()
+	return
+elseif action ~= "host" then
+	printUsage()
+	return
+end
+table.remove(tArgs, 1)
 local sHostname = tArgs[1]
 if sHostname == nil then
 	printUsage()
