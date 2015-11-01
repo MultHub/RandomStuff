@@ -85,7 +85,7 @@ local commands = {
 	end,
 	meta = function(bool)
 		useMeta = bool == "true"
-	end
+	end,
 	saveprof = saveProfile,
 	loadprof = loadProfile,
 	["shell"] = function()
