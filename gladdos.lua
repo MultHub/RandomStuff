@@ -1,3 +1,4 @@
+local useMeta
 local port
 local tableize = true
 local tableObject = "line"
@@ -82,6 +83,9 @@ local commands = {
 	["raw+"] = function(text)
 		tableObject = text
 	end,
+	meta = function(bool)
+		useMeta = bool == "true"
+	end
 	saveprof = saveProfile,
 	loadprof = loadProfile,
 	["shell"] = function()
@@ -135,7 +139,7 @@ local function handleCommands(s)
 	end
 end
 
-print("GLaDDoS 1.34")
+print("GLaDDoS 1.4")
 
 local modems = {}
 for i, v in pairs(rs.getSides()) do
@@ -170,10 +174,14 @@ end, function()
 		end
 		if input:sub(1, 1) == "/" then
 			if port then
-				for i, modem in pairs(modems) do
-					modem.open(port)
-					modem.transmit(port, os.getComputerID(), (tableize and {[tableObject] = (input:sub(1, 1) == "." and input:sub(2) or input)} or (input:sub(1, 1) == "." and input:sub(2) or input)))
-					modem.close(port)
+				if useMeta then
+					os.sendMessage(port, (tableize and {[tableObject] = (input:sub(1, 1) == "." and input:sub(2) or input)} or (input:sub(1, 1) == "." and input:sub(2) or input)))
+				else
+					for i, modem in pairs(modems) do
+						modem.open(port)
+						modem.transmit(port, os.getComputerID(), (tableize and {[tableObject] = (input:sub(1, 1) == "." and input:sub(2) or input)} or (input:sub(1, 1) == "." and input:sub(2) or input)))
+						modem.close(port)
+					end
 				end
 			else
 				print("Set port with .port <id>")
