@@ -34,6 +34,7 @@ local function loadProfile(name)
 	port = profiles[name].port
 	tableize = profiles[name].tableize
 	tableObject = profiles[name].tableObject
+	useMeta = profiles[name].useMeta
 	print("Loaded profile "..name)
 end
 
@@ -51,6 +52,7 @@ local function saveProfile(name)
 		port = port,
 		tableize = tableize,
 		tableObject = tableObject,
+		useMeta = useMeta,
 	}
 	local f = fs.open(".GLaDDoS-profiles", "w")
 	f.write(textutils.serialize(profiles))
